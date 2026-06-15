@@ -1,0 +1,144 @@
+.photo-detail {
+  min-height: 100vh;
+}
+
+.photo-detail__inner {
+  padding: 2rem 5vw 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.photo-detail__back {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  transition: color .2s;
+}
+
+.photo-detail__back:hover {
+  color: var(--fg);
+}
+
+.photo-detail__image {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.photo-detail__image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.photo-detail__meta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
+}
+
+.photo-detail__title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 200;
+  letter-spacing: -.01em;
+  color: var(--fg);
+  margin-bottom: .5rem;
+}
+
+.photo-detail__subtitle {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.photo-detail__tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.photo-detail__tag {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 7px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #333;
+  padding: 3px 8px;
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+}
+
+/* EXIF */
+.exif-primary,
+.exif-secondary {
+  border-top: 1px solid var(--divider);
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.exif-primary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.exif-secondary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.exif-item__label {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 7px;
+  font-weight: 200;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: #333;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.exif-item__value {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Prev / Next */
+.photo-detail__nav {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--divider);
+  padding-top: 1.25rem;
+  margin-top: 1rem;
+}
+
+.photo-detail__nav-link {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  transition: color .2s;
+}
+
+.photo-detail__nav-link:hover {
+  color: var(--fg);
+}
+
+.photo-detail__nav-spacer {
+  flex: 1;
+}
