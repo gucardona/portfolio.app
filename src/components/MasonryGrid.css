@@ -4,3 +4,9 @@
   gap: var(--gap);
   padding: var(--gap);
 }
+
+@media (max-width: 640px) {
+  .masonry-grid {
+    grid-template-columns: 1fr;
+  }
+}

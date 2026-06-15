@@ -142,3 +142,13 @@
 .photo-detail__nav-spacer {
   flex: 1;
 }
+
+@media (max-width: 640px) {
+  .exif-primary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .exif-secondary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
