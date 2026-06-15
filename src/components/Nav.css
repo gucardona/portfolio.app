@@ -1,0 +1,35 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 5vw;
+  border-bottom: 1px solid var(--divider);
+}
+
+.nav-logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  font-weight: 200;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 8px;
+  font-weight: 200;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--faint);
+  transition: color .2s;
+}
+
+.nav-links a:hover {
+  color: var(--fg);
+}
