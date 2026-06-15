@@ -1,0 +1,22 @@
+.photo-card {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.photo-card--portrait {
+  grid-row: span 2;
+}
+
+.photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter .2s;
+}
+
+.photo-card:hover img {
+  filter: brightness(1.1);
+}
