@@ -106,7 +106,7 @@ Logo (`portfolio`) left, links (`About · Contact`) right. Same Unbounded micro-
 Chips: `All · Landscape · Street · Portrait · Travel`. Active chip has white border and white text. Each chip displays the count of photos in that genre in a muted tone. Clicking a chip filters the grid.
 
 ### Masonry Grid
-CSS Grid with `grid-template-columns: repeat(3, 1fr)`. Portrait photos (`aspectRatio: "2/3"`) use `grid-row: span 2`. Wide/panoramic photos (`aspectRatio: "3/2"`) use `grid-column: span 2` where appropriate. Gap: 3px.
+CSS Grid with `grid-template-columns: repeat(3, 1fr)`. Portrait photos (`aspectRatio: "2/3"`) use `grid-row: span 2` to display at their natural taller proportion. Landscape (`3/2`) and square (`1`) photos each fill one grid cell. Gap: 3px.
 
 On hover: brightness lift + pointer cursor. No text overlay on thumbnails.
 
@@ -123,7 +123,7 @@ Each card is a `<Link>` to `/photo/:slug`.
 4. **Metadata row** — title + `Genre · Year` on left; genre tag chips on right
 5. **EXIF block (primary)** — 4-column grid: Shutter · Aperture · ISO · Focal length
 6. **EXIF block (secondary)** — 3-column grid: Camera · Lens · Location
-7. **Prev / Next arrows** — navigate through all photos (or filtered set if navigated from a filter)
+7. **Prev / Next arrows** — navigate through all photos. Filter state is not preserved on the detail page (always uses full photo list for prev/next).
 
 EXIF blocks are separated from metadata by a `1px` `#1a1a1a` divider. Each EXIF item shows a micro uppercase label above the value. Missing fields are not rendered; if all secondary EXIF fields are absent, the secondary block is hidden entirely.
 
