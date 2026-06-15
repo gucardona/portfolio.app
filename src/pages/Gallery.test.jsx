@@ -8,7 +8,7 @@ describe('Gallery', () => {
   it('shows all photos by default', () => {
     render(<MemoryRouter><Gallery /></MemoryRouter>)
     const images = screen.getAllByRole('img')
-    expect(images.length).toBeGreaterThan(1)
+    expect(images.length).toBe(6)
   })
 
   it('filters to only landscape photos when Landscape chip is clicked', async () => {

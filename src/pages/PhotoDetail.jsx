@@ -19,9 +19,6 @@ export default function PhotoDetail() {
   const index = photos.findIndex(p => p.slug === slug)
   const photo = photos[index]
 
-  const prev = index > 0 ? photos[index - 1] : null
-  const next = index < photos.length - 1 ? photos[index + 1] : null
-
   if (!photo) {
     return (
       <div className="photo-detail">
@@ -33,6 +30,9 @@ export default function PhotoDetail() {
       </div>
     )
   }
+
+  const prev = index > 0 ? photos[index - 1] : null
+  const next = index < photos.length - 1 ? photos[index + 1] : null
 
   const exif = photo.exif ?? {}
   const hasSecondary = exif.camera || exif.lens || exif.location

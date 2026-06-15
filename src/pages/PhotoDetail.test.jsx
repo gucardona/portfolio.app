@@ -48,4 +48,9 @@ describe('PhotoDetail', () => {
     renderDetail('downtown-rush')
     expect(screen.getByText(/prev/i)).toBeInTheDocument()
   })
+
+  it('shows not-found message for unknown slug', () => {
+    renderDetail('no-such-slug')
+    expect(screen.getByText(/Photo not found/i)).toBeInTheDocument()
+  })
 })

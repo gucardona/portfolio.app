@@ -73,7 +73,7 @@
   font-size: 7px;
   letter-spacing: .2em;
   text-transform: uppercase;
-  color: #333;
+  color: var(--faint);
   padding: 3px 8px;
   border: 1px solid var(--divider);
   border-radius: 2px;
@@ -105,7 +105,7 @@
   font-weight: 200;
   letter-spacing: .25em;
   text-transform: uppercase;
-  color: #333;
+  color: var(--faint);
   display: block;
   margin-bottom: 4px;
 }
