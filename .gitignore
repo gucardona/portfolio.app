@@ -13,7 +13,7 @@ dist-ssr
 *.local
 
 # Go build artifacts
-portfolio-app
+/portfolio-app
 portfolio.db
 
 # Editor directories and files
