@@ -7,11 +7,11 @@
 
 .filter-chip {
   font-family: 'Unbounded', sans-serif;
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 200;
   letter-spacing: .2em;
   text-transform: uppercase;
-  padding: 5px 12px;
+  padding: 6px 14px;
   border: 1px solid var(--divider);
   border-radius: 2px;
   color: var(--faint);
@@ -34,7 +34,7 @@
 }
 
 .filter-chip__count {
-  font-size: 6px;
+  font-size: 9px;
   color: #333;
 }
 

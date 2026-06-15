@@ -10,7 +10,7 @@
 
 .photo-detail__back {
   font-family: 'Unbounded', sans-serif;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 200;
   letter-spacing: .2em;
   text-transform: uppercase;
@@ -45,7 +45,7 @@
 
 .photo-detail__title {
   font-family: 'Unbounded', sans-serif;
-  font-size: clamp(18px, 2.5vw, 28px);
+  font-size: clamp(22px, 2.5vw, 32px);
   font-weight: 200;
   letter-spacing: -.01em;
   color: var(--fg);
@@ -54,7 +54,7 @@
 
 .photo-detail__subtitle {
   font-family: 'Unbounded', sans-serif;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 200;
   letter-spacing: .2em;
   text-transform: uppercase;
@@ -70,11 +70,11 @@
 
 .photo-detail__tag {
   font-family: 'Unbounded', sans-serif;
-  font-size: 7px;
-  letter-spacing: .2em;
+  font-size: 10px;
+  letter-spacing: .15em;
   text-transform: uppercase;
   color: var(--faint);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border: 1px solid var(--divider);
   border-radius: 2px;
 }
@@ -83,36 +83,36 @@
 .exif-primary,
 .exif-secondary {
   border-top: 1px solid var(--divider);
-  padding-top: 1rem;
-  margin-bottom: 1rem;
+  padding-top: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .exif-primary {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .exif-secondary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .exif-item__label {
   font-family: 'Unbounded', sans-serif;
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 200;
-  letter-spacing: .25em;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--faint);
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .exif-item__value {
   font-family: 'Syne', sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   color: var(--muted);
 }
 
@@ -121,13 +121,13 @@
   display: flex;
   justify-content: space-between;
   border-top: 1px solid var(--divider);
-  padding-top: 1.25rem;
+  padding-top: 1.5rem;
   margin-top: 1rem;
 }
 
 .photo-detail__nav-link {
   font-family: 'Unbounded', sans-serif;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 200;
   letter-spacing: .2em;
   text-transform: uppercase;
@@ -141,6 +141,184 @@
 
 .photo-detail__nav-spacer {
   flex: 1;
+}
+
+/* Expand hint on image */
+.photo-detail__image {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-detail__image img {
+  transition: transform 0.4s ease;
+}
+
+.photo-detail__image:hover img {
+  transform: scale(1.015);
+}
+
+.photo-detail__image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+  pointer-events: none;
+}
+
+.photo-detail__image:hover::after {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.photo-detail__expand-hint {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  font-weight: 200;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.photo-detail__image:hover .photo-detail__expand-hint {
+  opacity: 1;
+}
+
+/* Lightbox */
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: default;
+}
+
+.photo-lightbox--zoomed {
+  cursor: grab;
+}
+
+.photo-lightbox--zoomed:active {
+  cursor: grabbing;
+}
+
+.photo-lightbox__frame {
+  line-height: 0;
+  overflow: visible;
+}
+
+.photo-lightbox__img {
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  object-fit: contain !important;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.photo-lightbox__close {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color .15s, border-color .15s, background .15s;
+  z-index: 1;
+}
+
+.photo-lightbox__close:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.1);
+}
+
+/* Scroll hint */
+.photo-lightbox__hint {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  font-weight: 200;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+/* Zoom UI */
+.photo-lightbox__zoom-ui {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.photo-lightbox__zoom-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 6px 14px;
+  border-radius: 2px;
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+
+.photo-lightbox__zoom-level {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  font-weight: 200;
+  letter-spacing: .15em;
+  color: rgba(255,255,255,0.7);
+}
+
+.photo-lightbox__zoom-reset {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  font-weight: 200;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color .15s;
+}
+
+.photo-lightbox__zoom-reset:hover {
+  color: rgba(255,255,255,0.9);
 }
 
 @media (max-width: 640px) {

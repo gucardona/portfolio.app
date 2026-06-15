@@ -10,7 +10,7 @@ describe('photos data', () => {
       expect(photo.genres).toBeInstanceOf(Array)
       expect(photo.genres.length).toBeGreaterThan(0)
       expect(photo.src).toBeTruthy()
-      expect(['3/2', '2/3', '1']).toContain(photo.aspectRatio)
+      expect(['3/2', '2/3', '1', '4/3']).toContain(photo.aspectRatio)
     })
   })
 
