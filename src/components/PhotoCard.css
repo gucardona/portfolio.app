@@ -5,9 +5,6 @@
   position: relative;
 }
 
-.photo-card--portrait {
-  grid-row: span 2;
-}
 
 .photo-card img {
   width: 100%;
