@@ -12,10 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Go build artifacts
-/portfolio-app
-portfolio.db
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,3 +22,31 @@ portfolio.db
 *.njsproj
 *.sln
 *.sw?
+
+# Go build artifacts
+/portfolio-app
+portfolio.db
+
+# Go binaries / test artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# Go workspace
+go.work
+go.work.sum
+
+# Env
+.env
+
+# Tooling
+.claude/
+.agents/
+docs/
