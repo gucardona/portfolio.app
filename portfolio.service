@@ -1,0 +1,13 @@
+[Unit]
+Description=portfolio.gupa.dev
+After=network.target
+
+[Service]
+Type=simple
+User=gustavo
+WorkingDirectory=/home/gustavo/gupa.dev/portfolio.app
+ExecStart=/home/gustavo/gupa.dev/portfolio.app/portfolio-app
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
