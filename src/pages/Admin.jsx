@@ -1,10 +1,11 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { useNavigate, Link, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
-import { photos as existingPhotos, GENRES } from '../data/photos'
+import { usePhotos } from '../context/PhotosContext'
 import './Admin.css'
 
+const GENRES = ['landscape', 'street', 'portrait', 'travel']
 const ASPECT_RATIOS = ['3/2', '2/3', '1', '4/3', '16/9']
 
 const empty = {
@@ -18,50 +19,20 @@ function toSlug(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
 
-function generateConfig(form, fileName) {
-  const exifEntries = [
-    ['shutter', form.shutter],
-    ['aperture', form.aperture],
-    ['iso', form.iso ? Number(form.iso) : null],
-    ['focal', form.focal],
-    ['camera', form.camera],
-    ['lens', form.lens],
-    ['location', form.location],
-  ].filter(([, v]) => v !== '' && v !== null && v !== undefined)
-
-  const exifStr = exifEntries.length
-    ? '    exif: {\n' + exifEntries.map(([k, v]) =>
-        `      ${k}: ${typeof v === 'number' ? v : `'${v}'`},`
-      ).join('\n') + '\n    },'
-    : '    exif: {},'
-
-  const src = fileName
-    ? `/photos/${fileName}`
-    : `/photos/${form.slug || 'photo'}.jpg`
-
-  return `  {
-    slug: '${form.slug || 'photo-slug'}',
-    title: '${form.title || 'Photo Title'}',
-    year: ${form.year},
-    genres: [${form.genres.map(g => `'${g}'`).join(', ')}],
-    src: '${src}',
-    aspectRatio: '${form.aspectRatio}',
-${exifStr}
-  },`
-}
-
 export default function Admin() {
   const { authed, logout } = useAuth()
+  const { photos, refresh } = usePhotos()
   const navigate = useNavigate()
   const fileRef = useRef(null)
 
   const [form, setForm] = useState(empty)
   const [slugManual, setSlugManual] = useState(false)
   const [preview, setPreview] = useState(null)
-  const [fileName, setFileName] = useState('')
+  const [file, setFile] = useState(null)
   const [dragging, setDragging] = useState(false)
-  const [copied, setCopied] = useState(false)
   const [selected, setSelected] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState(null)
 
   if (!authed) return <Navigate to="/login" replace />
 
@@ -72,17 +43,17 @@ export default function Admin() {
     if (!slugManual) set('slug', toSlug(val))
   }
 
-  const handleFile = useCallback((file) => {
-    if (!file || !file.type.startsWith('image/')) return
-    const url = URL.createObjectURL(file)
-    setPreview(url)
-    setFileName(file.name)
-    if (!form.title) {
-      const base = file.name.replace(/\.[^.]+$/, '')
+  const handleFile = useCallback((f) => {
+    if (!f || !f.type.startsWith('image/')) return
+    setFile(f)
+    setPreview(URL.createObjectURL(f))
+    setForm(prev => {
+      if (prev.title) return prev
+      const base = f.name.replace(/\.[^.]+$/, '')
       const title = base.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-      setForm(f => ({ ...f, title, slug: toSlug(base) }))
-    }
-  }, [form.title])
+      return { ...prev, title, slug: toSlug(base) }
+    })
+  }, [])
 
   const onDrop = useCallback((e) => {
     e.preventDefault()
@@ -97,27 +68,21 @@ export default function Admin() {
     )
   }
 
-  const config = generateConfig(form, fileName)
-
-  const copy = () => {
-    navigator.clipboard.writeText(config)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1800)
-  }
-
   const reset = () => {
     setForm(empty)
     setSlugManual(false)
     setPreview(null)
-    setFileName('')
+    setFile(null)
     setSelected(null)
+    setError(null)
     if (fileRef.current) fileRef.current.value = ''
   }
 
   const loadPhoto = (p) => {
     setSelected(p.slug)
     setPreview(null)
-    setFileName('')
+    setFile(null)
+    setError(null)
     setForm({
       title: p.title,
       slug: p.slug,
@@ -135,10 +100,87 @@ export default function Admin() {
     setSlugManual(true)
   }
 
+  const handleSubmit = async () => {
+    setError(null)
+    setSaving(true)
+    try {
+      if (selected) {
+        const res = await fetch(`/api/photos/${selected}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            title: form.title,
+            year: Number(form.year),
+            genres: form.genres,
+            aspectRatio: form.aspectRatio,
+            shutter: form.shutter || '',
+            aperture: form.aperture || '',
+            iso: form.iso ? Number(form.iso) : 0,
+            focal: form.focal || '',
+            camera: form.camera || '',
+            lens: form.lens || '',
+            location: form.location || '',
+          }),
+        })
+        if (!res.ok) throw new Error(await res.text())
+      } else {
+        if (!file) { setError('Select an image file first'); setSaving(false); return }
+        const fd = new FormData()
+        fd.append('file', file)
+        fd.append('title', form.title)
+        fd.append('slug', form.slug)
+        fd.append('year', String(form.year))
+        fd.append('genres', JSON.stringify(form.genres))
+        fd.append('aspectRatio', form.aspectRatio)
+        if (form.shutter) fd.append('shutter', form.shutter)
+        if (form.aperture) fd.append('aperture', form.aperture)
+        if (form.iso) fd.append('iso', form.iso)
+        if (form.focal) fd.append('focal', form.focal)
+        if (form.camera) fd.append('camera', form.camera)
+        if (form.lens) fd.append('lens', form.lens)
+        if (form.location) fd.append('location', form.location)
+        const res = await fetch('/api/photos', {
+          method: 'POST',
+          credentials: 'include',
+          body: fd,
+        })
+        if (!res.ok) throw new Error(await res.text())
+      }
+      await refresh()
+      reset()
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!selected || !window.confirm(`Delete "${form.title}"?`)) return
+    setError(null)
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/photos/${selected}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+      if (!res.ok) throw new Error(await res.text())
+      await refresh()
+      reset()
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const selectedPhoto = selected ? photos.find(p => p.slug === selected) : null
+
   return (
     <div className="admin">
       <header className="admin-header">
-        <Link to="/" className="admin-header__logo">portfolio</Link>
+        <Link to="/" className="admin-header__logo">Gustavo Parcianello Cardona</Link>
         <span className="admin-header__slug">/ admin</span>
         <button className="admin-header__logout" onClick={() => { logout(); navigate('/login') }}>
           logout
@@ -148,11 +190,11 @@ export default function Admin() {
       <div className="admin-layout">
         <aside className="admin-sidebar">
           <div className="admin-sidebar__top">
-            <p className="admin-sidebar__label">Photos ({existingPhotos.length})</p>
+            <p className="admin-sidebar__label">Photos ({photos.length})</p>
             <button className="admin-sidebar__new" onClick={reset}>+ new</button>
           </div>
           <div className="admin-sidebar__list">
-            {existingPhotos.map(p => (
+            {photos.map(p => (
               <button
                 key={p.slug}
                 className={`admin-photo-row${selected === p.slug ? ' admin-photo-row--active' : ''}`}
@@ -177,6 +219,8 @@ export default function Admin() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
+            {error && <div className="admin-error">{error}</div>}
+
             <div className="admin-section">
               <div className="admin-section__row">
                 <p className="admin-section__heading">
@@ -186,7 +230,7 @@ export default function Admin() {
               </div>
 
               <div
-                className={`admin-dropzone${dragging ? ' admin-dropzone--active' : ''}${preview ? ' admin-dropzone--filled' : ''}`}
+                className={`admin-dropzone${dragging ? ' admin-dropzone--active' : ''}${preview || selectedPhoto ? ' admin-dropzone--filled' : ''}`}
                 onDragOver={e => { e.preventDefault(); setDragging(true) }}
                 onDragLeave={() => setDragging(false)}
                 onDrop={onDrop}
@@ -203,13 +247,9 @@ export default function Admin() {
                       <span className="admin-dropzone__change">change image</span>
                     </div>
                   </>
-                ) : selected ? (
+                ) : selectedPhoto ? (
                   <>
-                    <img
-                      src={existingPhotos.find(p => p.slug === selected)?.src}
-                      alt={form.title}
-                      className="admin-dropzone__preview"
-                    />
+                    <img src={selectedPhoto.src} alt={form.title} className="admin-dropzone__preview" />
                     <div className="admin-dropzone__overlay">
                       <span className="admin-dropzone__change">replace image</span>
                     </div>
@@ -224,20 +264,11 @@ export default function Admin() {
                       </svg>
                     </div>
                     <span className="admin-dropzone__text">drop image or click to browse</span>
-                    <span className="admin-dropzone__sub">then place the file in /public/photos/</span>
                   </div>
                 )}
               </div>
               <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }}
                 onChange={e => handleFile(e.target.files[0])} />
-
-              {fileName && (
-                <div className="admin-file-note">
-                  <span className="admin-file-note__label">file</span>
-                  <span className="admin-file-note__name">{fileName}</span>
-                  <span className="admin-file-note__arrow">→ copy to /public/photos/</span>
-                </div>
-              )}
             </div>
 
             <div className="admin-section">
@@ -252,7 +283,9 @@ export default function Admin() {
                   <label className="admin-label" htmlFor="f-slug">Slug</label>
                   <input id="f-slug" className="admin-input admin-input--mono" value={form.slug}
                     onChange={e => { setSlugManual(true); set('slug', e.target.value) }}
-                    placeholder="golden-hour-patagonia" />
+                    placeholder="golden-hour-patagonia"
+                    disabled={!!selected}
+                  />
                 </div>
                 <div className="admin-field">
                   <label className="admin-label" htmlFor="f-year">Year</label>
@@ -273,12 +306,9 @@ export default function Admin() {
               <p className="admin-section__heading">Genres</p>
               <div className="admin-genres">
                 {GENRES.map(g => (
-                  <button
-                    key={g}
-                    type="button"
+                  <button key={g} type="button"
                     className={`admin-genre-btn${form.genres.includes(g) ? ' admin-genre-btn--on' : ''}`}
-                    onClick={() => toggleGenre(g)}
-                  >
+                    onClick={() => toggleGenre(g)}>
                     {g}
                   </button>
                 ))}
@@ -288,12 +318,7 @@ export default function Admin() {
             <div className="admin-section">
               <p className="admin-section__heading">EXIF — Primary</p>
               <div className="admin-grid admin-grid--4">
-                {[
-                  ['shutter', 'Shutter', '1/500s'],
-                  ['aperture', 'Aperture', 'f/2.8'],
-                  ['iso', 'ISO', '400'],
-                  ['focal', 'Focal', '35mm'],
-                ].map(([key, label, ph]) => (
+                {[['shutter','Shutter','1/500s'],['aperture','Aperture','f/2.8'],['iso','ISO','400'],['focal','Focal','35mm']].map(([key, label, ph]) => (
                   <div key={key} className="admin-field">
                     <label className="admin-label" htmlFor={`f-${key}`}>{label}</label>
                     <input id={`f-${key}`} className="admin-input admin-input--mono" value={form[key]}
@@ -306,11 +331,7 @@ export default function Admin() {
             <div className="admin-section">
               <p className="admin-section__heading">EXIF — Secondary</p>
               <div className="admin-grid admin-grid--3">
-                {[
-                  ['camera', 'Camera', 'Sony A7IV'],
-                  ['lens', 'Lens', '24–70 f/2.8'],
-                  ['location', 'Location', 'Patagonia, AR'],
-                ].map(([key, label, ph]) => (
+                {[['camera','Camera','Sony A7IV'],['lens','Lens','24–70 f/2.8'],['location','Location','Patagonia, AR']].map(([key, label, ph]) => (
                   <div key={key} className="admin-field">
                     <label className="admin-label" htmlFor={`f-${key}`}>{label}</label>
                     <input id={`f-${key}`} className="admin-input" value={form[key]}
@@ -321,17 +342,16 @@ export default function Admin() {
             </div>
 
             <div className="admin-section admin-section--last">
-              <div className="admin-config-header">
-                <p className="admin-section__heading">Generated Config</p>
-                <button className={`admin-copy-btn${copied ? ' admin-copy-btn--done' : ''}`} onClick={copy}>
-                  {copied ? '✓ copied' : 'copy'}
+              <div className="admin-actions">
+                <button className="admin-save-btn" onClick={handleSubmit} disabled={saving}>
+                  {saving ? 'Saving…' : selected ? 'Save Changes' : 'Upload Photo'}
                 </button>
+                {selected && (
+                  <button className="admin-delete-btn" onClick={handleDelete} disabled={saving}>
+                    Delete
+                  </button>
+                )}
               </div>
-              <pre className="admin-config-output">{config}</pre>
-              <p className="admin-config-note">
-                Paste into <code>src/data/photos.js</code> inside the <code>photos</code> array,
-                then copy the image file to <code>/public/photos/</code>.
-              </p>
             </div>
           </motion.div>
         </main>

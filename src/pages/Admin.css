@@ -334,44 +334,7 @@
 }
 
 .admin-dropzone__sub {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 8px;
-  font-weight: 200;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: rgba(68,68,68,0.55);
-}
-
-.admin-file-note {
-  margin-top: .75rem;
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.admin-file-note__label {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 8px;
-  font-weight: 200;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-.admin-file-note__name {
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.admin-file-note__arrow {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 8px;
-  font-weight: 200;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  color: var(--faint);
+  display: none;
 }
 
 /* ── Grid ── */
@@ -475,73 +438,67 @@
   background: rgba(0, 87, 184, 0.07);
 }
 
-/* ── Config output ── */
-.admin-config-header {
+/* ── Actions ── */
+.admin-error {
+  margin-bottom: 1.25rem;
+  padding: .75rem 1rem;
+  border: 1px solid #c0392b;
+  color: #e74c3c;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+}
+
+.admin-actions {
   display: flex;
+  gap: 1rem;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
 }
 
-.admin-config-header .admin-section__heading {
-  margin-bottom: 0;
-}
-
-.admin-copy-btn {
+.admin-save-btn {
   font-family: 'Unbounded', sans-serif;
-  font-size: 8.5px;
-  font-weight: 200;
+  font-size: 10px;
+  font-weight: 400;
   letter-spacing: .2em;
   text-transform: uppercase;
-  color: var(--faint);
-  background: none;
-  border: 1px solid var(--divider);
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  padding: 10px 24px;
   cursor: pointer;
-  padding: 5px 14px;
-  border-radius: 2px;
-  transition: all .15s;
+  transition: opacity .2s;
 }
 
-.admin-copy-btn:hover {
-  color: var(--fg);
-  border-color: var(--muted);
+.admin-save-btn:hover:not(:disabled) {
+  opacity: .85;
 }
 
-.admin-copy-btn--done {
-  color: var(--accent);
-  border-color: var(--accent);
+.admin-save-btn:disabled {
+  opacity: .4;
+  cursor: default;
 }
 
-.admin-config-output {
-  background: #0e0e0e;
-  border: 1px solid var(--divider);
-  padding: 1.25rem 1.5rem;
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.75;
-  overflow-x: auto;
-  white-space: pre;
-  border-radius: 0;
-}
-
-.admin-config-note {
-  margin-top: .75rem;
+.admin-delete-btn {
   font-family: 'Unbounded', sans-serif;
-  font-size: 8.5px;
-  font-weight: 200;
-  letter-spacing: .12em;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .2em;
   text-transform: uppercase;
-  color: rgba(68,68,68,0.7);
-  line-height: 1.7;
+  background: none;
+  color: #c0392b;
+  border: 1px solid #c0392b;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: all .2s;
 }
 
-.admin-config-note code {
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  color: var(--faint);
-  letter-spacing: 0;
-  text-transform: none;
+.admin-delete-btn:hover:not(:disabled) {
+  background: #c0392b;
+  color: #fff;
+}
+
+.admin-delete-btn:disabled {
+  opacity: .4;
+  cursor: default;
 }
 
 /* ── Responsive ── */

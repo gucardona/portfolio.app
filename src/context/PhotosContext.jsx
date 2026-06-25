@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const PhotosContext = createContext(null)
 
@@ -8,17 +8,19 @@ export function PhotosProvider({ children }) {
   const [photos, setPhotos] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetch('/api/photos')
+  const refresh = useCallback(() => {
+    return fetch('/api/photos')
       .then(r => r.json())
       .then(data => { setPhotos(data); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
 
+  useEffect(() => { refresh() }, [refresh])
+
   const genres = GENRE_ORDER.filter(g => photos.some(p => p.genres.includes(g)))
 
   return (
-    <PhotosContext.Provider value={{ photos, genres, loading }}>
+    <PhotosContext.Provider value={{ photos, genres, loading, refresh }}>
       {children}
     </PhotosContext.Provider>
   )
