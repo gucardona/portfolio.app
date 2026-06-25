@@ -6,8 +6,8 @@ export default function Nav() {
     <nav className="nav">
       <Link to="/" className="nav-logo">Gustavo Parcianello Cardona</Link>
       <div className="nav-links">
-        <a href="#">About</a>
-        <a href="#">Contact</a>
+        <Link to="/about">About</Link>
+        <a href="mailto:gupcardona@gmail.com">Contact</a>
       </div>
     </nav>
   )

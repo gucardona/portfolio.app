@@ -1,0 +1,53 @@
+.about {
+  min-height: 100vh;
+}
+
+.about__inner {
+  padding: 6rem 5vw;
+  max-width: 640px;
+}
+
+.about__name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(18px, 3vw, 28px);
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin-bottom: 1.5rem;
+}
+
+.about__tagline {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.about__bio {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--fg);
+  line-height: 1.7;
+  margin-bottom: 3rem;
+}
+
+.about__contact {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: .04em;
+  border-bottom: 1px solid var(--faint);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+}
+
+.about__contact:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+}
