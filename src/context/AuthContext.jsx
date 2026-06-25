@@ -2,13 +2,17 @@ import { createContext, useContext, useState } from 'react'
 
 const AuthContext = createContext(null)
 
-const CREDENTIALS = { email: 'admin@gupa.dev', password: 'admin' }
-
 export function AuthProvider({ children }) {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_authed') === '1')
 
-  const login = (email, password) => {
-    if (email === CREDENTIALS.email && password === CREDENTIALS.password) {
+  const login = async (email, password) => {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+      credentials: 'include',
+    })
+    if (res.ok) {
       sessionStorage.setItem('admin_authed', '1')
       setAuthed(true)
       return true
@@ -16,7 +20,8 @@ export function AuthProvider({ children }) {
     return false
   }
 
-  const logout = () => {
+  const logout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
     sessionStorage.removeItem('admin_authed')
     setAuthed(false)
   }

@@ -1,7 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import { vi, describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { photos } from '../data/photos'
 import PhotoDetail from './PhotoDetail'
+
+vi.mock('../context/PhotosContext', () => ({
+  usePhotos: () => ({ photos, genres: [], loading: false }),
+}))
 
 function renderDetail(slug) {
   return render(

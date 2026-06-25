@@ -1,8 +1,17 @@
-import { describe, it, expect } from 'vitest'
+import { vi, describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
+import { photos } from '../data/photos'
 import Gallery from './Gallery'
+
+vi.mock('../context/PhotosContext', () => ({
+  usePhotos: () => ({
+    photos,
+    genres: ['landscape', 'street', 'portrait', 'travel'],
+    loading: false,
+  }),
+}))
 
 describe('Gallery', () => {
   it('shows all photos by default', () => {

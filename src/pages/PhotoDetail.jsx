@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion'
 import Nav from '../components/Nav'
-import { photos } from '../data/photos'
+import { usePhotos } from '../context/PhotosContext'
 import './PhotoDetail.css'
 
 function ExifItem({ label, value }) {
@@ -17,6 +17,7 @@ function ExifItem({ label, value }) {
 
 export default function PhotoDetail() {
   const { slug } = useParams()
+  const { photos } = usePhotos()
   const index = photos.findIndex(p => p.slug === slug)
   const photo = photos[index]
 
