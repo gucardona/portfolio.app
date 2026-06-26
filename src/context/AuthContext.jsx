@@ -1,9 +1,16 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_authed') === '1')
+  const [authed, setAuthed] = useState(false)
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then(r => { setAuthed(r.ok); setChecking(false) })
+      .catch(() => { setAuthed(false); setChecking(false) })
+  }, [])
 
   const login = async (email, password) => {
     const res = await fetch('/api/auth/login', {
@@ -12,19 +19,16 @@ export function AuthProvider({ children }) {
       body: JSON.stringify({ email, password }),
       credentials: 'include',
     })
-    if (res.ok) {
-      sessionStorage.setItem('admin_authed', '1')
-      setAuthed(true)
-      return true
-    }
-    return false
+    if (res.ok) setAuthed(true)
+    return res.ok
   }
 
   const logout = async () => {
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
-    sessionStorage.removeItem('admin_authed')
     setAuthed(false)
   }
+
+  if (checking) return null
 
   return (
     <AuthContext.Provider value={{ authed, login, logout }}>

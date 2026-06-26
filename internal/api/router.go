@@ -25,6 +25,9 @@ func NewRouter(db *sql.DB, fs *store.FileStore, adminEmail, adminPassword, jwtSe
 
 	r.Group(func(r chi.Router) {
 		r.Use(auth.Middleware(jwtSecret))
+		r.Get("/api/auth/me", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusNoContent)
+		})
 		r.Post("/api/photos", ph.create)
 		r.Put("/api/photos/{slug}", ph.update)
 		r.Delete("/api/photos/{slug}", ph.delete)
