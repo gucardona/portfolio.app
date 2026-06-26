@@ -20,7 +20,7 @@ function toSlug(str) {
 }
 
 export default function Admin() {
-  const { authed, logout } = useAuth()
+  const { authed, checking, logout } = useAuth()
   const { photos, refresh } = usePhotos()
   const navigate = useNavigate()
   const fileRef = useRef(null)
@@ -34,6 +34,7 @@ export default function Admin() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
 
+  if (checking) return null
   if (!authed) return <Navigate to="/login" replace />
 
   const set = (key, value) => setForm(f => ({ ...f, [key]: value }))

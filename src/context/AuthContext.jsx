@@ -28,10 +28,8 @@ export function AuthProvider({ children }) {
     setAuthed(false)
   }
 
-  if (checking) return null
-
   return (
-    <AuthContext.Provider value={{ authed, login, logout }}>
+    <AuthContext.Provider value={{ authed, checking, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
